@@ -1,0 +1,14 @@
+from airflow import DAG
+from datetime import timedelta, datetime
+from airflow.decorators import task
+import yfinance as yf
+
+with DAG("get_price_{{dag_id}}",start_date=datetime(2022, 12, 1),schedule_interval= "{{schedule_interval}}",
+catchup = {{catchup or False}}) as dag :
+
+    @task
+    def extract(stock) :
+        print(stock)
+        return stock
+
+    extract

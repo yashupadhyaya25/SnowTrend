@@ -1,0 +1,8 @@
+catchup: false
+dag_id: TATACHEM
+database: RAW
+owner: Yash
+schedule_interval: '@daily'
+schema: STOCK
+table: TATACHEM
+ticker: TATACHEM.NS

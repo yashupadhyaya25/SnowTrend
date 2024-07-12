@@ -1,0 +1,8 @@
+catchup: false
+dag_id: IOC
+database: RAW
+owner: Yash
+schedule_interval: '@daily'
+schema: STOCK
+table: IOC
+ticker: IOC.NS

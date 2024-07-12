@@ -1,0 +1,8 @@
+catchup: false
+dag_id: PTC
+database: RAW
+owner: Yash
+schedule_interval: '@daily'
+schema: STOCK
+table: PTC
+ticker: PTC.BO

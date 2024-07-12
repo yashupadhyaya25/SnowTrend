@@ -1,0 +1,11 @@
+Version : 1
+
+sources:
+  - name: RAW_STOCK
+    database: RAW
+    schema: STOCK
+    tables:
+      - name: PTC
+      - name: IOC
+      - name: ONGC
+      - name: TATACHEM

@@ -1,0 +1,33 @@
+################################################################
+# DATA Test YML Created On - 2024/07/11 by Yash Upadhyaya
+# Added Test on 2024/07/11 by Yash Upadhyaya
+# name : all_stock
+#   - not null to DATE,LOW,HIGH,OPEN,CLOSE,LOAD_DATE
+################################################################
+
+version : 1
+
+models : 
+    - name : all_stock
+      columns :
+        - name : 'DATE'
+          tests :
+            - not_null
+        - name : 'TICKER'
+          tests :
+            - not_null
+        - name : 'LOW'
+          tests :
+            - not_null
+        - name : 'HIGH'
+          tests :
+            - not_null
+        - name : 'OPEN'
+          tests :
+            - not_null
+        - name : 'CLOSE'
+          tests :
+            - not_null
+        - name : 'LOAD_DATE'
+          tests :
+            - not_null
