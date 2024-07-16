@@ -1,0 +1,6 @@
+packages:
+  - package: EqualExperts/dbt_unit_testing
+    version: 0.4.12
+  - package: dbt-labs/dbt_utils
+    version: 1.2.0
+sha1_hash: a37fc341f079e5dd6606cd654cc16b09c3b044c8

@@ -8,8 +8,12 @@
 version : 1
 
 models : 
-    - name : all_stock
+    - name : stock_data
       columns :
+        - name : 'TICKER_KEY'
+          data_tests :
+            - not_null
+            - unique
         - name : 'DATE'
           data_tests :
             - not_null

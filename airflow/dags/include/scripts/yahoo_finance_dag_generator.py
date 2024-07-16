@@ -12,5 +12,5 @@ for filename in os.listdir(f"{file_dir}/inputs") :
         with open(f"{file_dir}/inputs/{filename}","r") as input_file:
             inputs = yaml.safe_load(input_file)
             print(inputs)
-            with open(f"airflow/dags/get_price_{inputs['dag_id'].lower()}.py","w") as f:
+            with open(f"/root/airflow/dags/get_price_{inputs['dag_id'].lower()}.py","w") as f:
                 f.write(template.render(inputs))

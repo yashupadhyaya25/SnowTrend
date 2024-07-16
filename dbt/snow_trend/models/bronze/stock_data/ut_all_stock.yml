@@ -1,0 +1,16 @@
+version: 1
+
+unit_tests:
+  - name: price_validation
+    description: "Check price"
+    model: stock_data
+    given:
+      - input: ref('all_stock')  
+        rows:
+          - {TICKER : PTC, LOW : 29.0,HIGH : 35.0,CLOSE : 33.0,OPEN : 22.0}
+          - {TICKER : IOC, LOW : 0.0,HIGH : 0.0,CLOSE : 0.0,OPEN : 0.0}
+    expect: 
+      rows:
+        - {TICKER : PTC, LOW : 29.0,HIGH : 35.0,CLOSE : 33.0,OPEN : 22.0,VALID_ROW : true}
+        - {TICKER : IOC, LOW : 0.0,HIGH : 0.0,CLOSE : 0.0,OPEN : 0.0,VALID_ROW : false}
+      

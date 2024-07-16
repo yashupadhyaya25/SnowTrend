@@ -5,6 +5,7 @@ from airflow.operators.python_operator import PythonOperator
 from airflow.operators.python_operator import BranchPythonOperator
 from airflow.providers.snowflake.hooks.snowflake import SnowflakeHook
 import yfinance as yf
+import pandas as pd
 import include.sql.yahoo_finance as sql_stmts
 from airflow.contrib.operators.slack_webhook_operator import SlackWebhookOperator
 
@@ -83,8 +84,13 @@ def extract_data(**kwargs) :
     print('End Date ---------->',end_date)
     stock_df = get_stock_history.history(start=start_date, 
                                     end=end_date)
-    if stock_df.size != 0 :
+    if stock_df.size > 0 :
         stock_df.reset_index(inplace = True)
+        stock_df['Date'] = pd.to_datetime(stock_df.Date).dt.tz_localize(None)
+        if start_date != '1900-01-01' :
+            stock_df = stock_df[stock_df['Date'] > result]
+        print(stock_df)
+        print(stock_df.size)
         stock_df.rename(
             columns={
                 'Low' : 'LOW',
