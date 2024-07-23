@@ -6,7 +6,7 @@
 }}
 
 with all_stock as (
-    select * from {{ ref('ALL_STOCK') }}
+    select * from {{ ref('ALL_MF') }}
 )
  SELECT
 *,MD5(concat(TICKER,'_',DATE)) TICKER_KEY,

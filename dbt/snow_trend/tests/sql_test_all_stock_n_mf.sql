@@ -6,7 +6,14 @@
 ################################################################
 */
 
-SELECT * FROM RAW.STOCK_DATA.ALL_STOCK
+SELECT * FROM STOCK_RAW.ALL_STOCK
+WHERE
+LOW <= 0 or
+HIGH <= 0 or 
+OPEN <= 0 or 
+CLOSE <= 0
+UNION
+SELECT * FROM STOCK_RAW.ALL_MF
 WHERE
 LOW <= 0 or
 HIGH <= 0 or 

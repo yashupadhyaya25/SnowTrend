@@ -1,7 +1,7 @@
 catchup: false
-dag_id: TATACHEM
+dag_id: UPL
 database: RAW
 owner: Yash
 schedule_interval: 0 14 * * *
-table: TATACHEM
-ticker: TATACHEM.NS
+table: UPL
+ticker: UPL.NS

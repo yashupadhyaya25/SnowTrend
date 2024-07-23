@@ -1,0 +1,7 @@
+catchup: false
+dag_id: AXIS_BLUECHIP_FUND_DIRECT_PLAN_GROWTH
+database: RAW
+owner: Yash
+schedule_interval: 0 14 * * *
+table: AXIS_BLUECHIP_FUND_DIRECT_PLAN_GROWTH
+ticker: 0P0000XVTL.BO

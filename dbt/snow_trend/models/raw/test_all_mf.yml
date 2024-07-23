@@ -5,15 +5,13 @@
 #   - not null to DATE,LOW,HIGH,OPEN,CLOSE,LOAD_DATE
 ################################################################
 
+
+
 version : 1
 
 models : 
-    - name : STOCK_DATA
+    - name : ALL_MF
       columns :
-        - name : TICKER_KEY
-          tests :
-            - not_null
-            - unique
         - name : DATE
           tests :
             - not_null

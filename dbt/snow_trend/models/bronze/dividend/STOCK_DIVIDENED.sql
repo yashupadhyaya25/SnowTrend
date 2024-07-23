@@ -1,13 +1,12 @@
 {{
     config(
-        schema='DATA',
-        database='BRONZE',
+        schema = 'BRONZE',
         materialized='table'
     )
 }}
 
 with all_stock as (
-    select * from {{ ref('all_stock') }}
+    select * from {{ ref('ALL_STOCK') }}
 )
 SELECT
 TICKER,DATE,DIVIDENDS 

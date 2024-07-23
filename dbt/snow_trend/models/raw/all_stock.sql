@@ -1,14 +1,17 @@
 {{
     config(
-        schema='DATA',
-        database='RAW'
+        schema = 'RAW'
     )
 }}
 
-select 'PTC' TICKER,* from {{ source('RAW_STOCK', 'PTC') }}
+select *,'PTC' TICKER from {{ source('STOCK', 'PTC') }}
 UNION ALL
-select 'TATACHEM' TICKER,* from {{ source('RAW_STOCK', 'TATACHEM') }}
+select *,'TATACHEM' TICKER from {{ source('STOCK', 'TATACHEM') }}
 UNION ALL
-select 'IOC' TICKER,* from {{ source('RAW_STOCK', 'IOC') }}
+select *,'IOC' TICKER from {{ source('STOCK', 'IOC') }}
 UNION ALL
-select 'ONGC' TICKER,* from {{ source('RAW_STOCK', 'ONGC') }}
+select *,'ONGC' TICKER from {{ source('STOCK', 'ONGC') }}
+UNION ALL
+select *,'UPL' TICKER from {{ source('STOCK', 'UPL') }}
+UNION ALL
+select *,'TATAPOWER' TICKER from {{ source('STOCK', 'TATAPOWER') }}

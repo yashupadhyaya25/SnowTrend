@@ -2,7 +2,6 @@ catchup: false
 dag_id: IOC
 database: RAW
 owner: Yash
-schedule_interval: '@daily'
-schema: STOCK
+schedule_interval: 0 14 * * *
 table: IOC
 ticker: IOC.NS

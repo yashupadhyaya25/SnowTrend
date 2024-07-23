@@ -1,9 +1,11 @@
 from airflow import DAG
 from datetime import timedelta, datetime
-from airflow.providers.snowflake.operators.snowflake import SnowflakeOperator
+# from airflow.providers.snowflake.operators.snowflake import SnowflakeOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.operators.python_operator import BranchPythonOperator
 from airflow.providers.snowflake.hooks.snowflake import SnowflakeHook
+from airflow.providers.mysql.hooks.mysql import MySqlHook
+from airflow.providers.mysql.operators.mysql import MySqlOperator
 import yfinance as yf
 import pandas as pd
 import include.sql.yahoo_finance as sql_stmts
@@ -60,7 +62,7 @@ def notification(context):
 def pull_xcom(**kwargs):
     ti = kwargs['ti']
     result = ti.xcom_pull(task_ids = 'Check-Table-Exists-Or-Not', key = 'return_value')
-    return result[0].get('EXIST_FLAG')
+    return True if result[0][0]==1 else False
 
 def decide_branch(**kwargs) :
     ti = kwargs['ti']
@@ -74,7 +76,7 @@ def extract_data(**kwargs) :
     get_stock_history = yf.Ticker(kwargs['ticker'])
     ti = kwargs['ti']
     result = ti.xcom_pull(task_ids = 'Check-Max-Date', key = 'return_value')
-    result = result[0].get('DATE')
+    result = result[0][0]
     if result != None :
         start_date = result + timedelta(days=1)
     else :
@@ -104,19 +106,25 @@ def extract_data(**kwargs) :
             },inplace = True
         )
         stock_df['LOAD_DATE'] = datetime.now()
-        conn_obj = SnowflakeHook(
-            snowflake_conn_id = "snowflake_db",
-            database  = "{{database}}",
-            schema = "{{schema}}"
-        ).get_sqlalchemy_engine()
-        stock_df.to_sql('{{table}}', conn_obj, if_exists='append', index=False)
+        stock_df = stock_df[['DATE','OPEN','HIGH','LOW','CLOSE','VOLUME','DIVIDENDS','SPLITS','LOAD_DATE']]
+        conn_obj = MySqlHook(
+            mysql_conn_id  = "snow_trend_db",
+            database  = "{{database}}"
+        ).get_conn()
+        cursor_obj = conn_obj.cursor()
+        insert_query = 'INSERT INTO {{database}}.{{table}} VALUE {record}'
+        for data in stock_df.itertuples() :
+            cursor_obj.execute(insert_query.format(record=data[1:]))
+        conn_obj.commit()
+        conn_obj.close()
 
 default_args = {
     "owner": "Yash",
     "retries": 0,
     # "retry_delay": timedelta(minutes=5),
     "on_failure_callback": notification,
-    "on_success_callback": notification
+    "on_success_callback": notification,
+    'AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION' : True
 }
 
 with DAG(
@@ -124,19 +132,18 @@ with DAG(
     start_date=datetime(2024, 1, 1),
     schedule="{{schedule_interval}}",
     catchup={{catchup or False}},
-    default_args = default_args
+    default_args = default_args,
+    render_template_as_native_obj=True
 ) as dag :
 
-    check_table_exists = SnowflakeOperator(
+    check_table_exists = MySqlOperator(
             task_id = 'Check-Table-Exists-Or-Not',
             sql=sql_stmts.check_if_exists,
             params = {
-                "schema" : '{{schema}}',
-                "catalog" : '{{database}}',
                 "table" : '{{table}}',
                 "database" : '{{database}}'
                         },
-            snowflake_conn_id = "snowflake_db"
+            mysql_conn_id = "snow_trend_db"
     )
 
     pull_xcoms = PythonOperator(
@@ -149,15 +156,14 @@ with DAG(
         python_callable = decide_branch
     )
 
-    create_table = SnowflakeOperator(
+    create_table = MySqlOperator(
             task_id = 'Create-Table',
             sql=sql_stmts.create_stock_table,
             params = {
                 "table" : '{{table}}',
-                "database" : '{{database}}',
-                "schema" : '{{schema}}'
+                "database" : '{{database}}'
                         },
-            snowflake_conn_id = "snowflake_db"
+            mysql_conn_id = "snow_trend_db"
     )
 
     load_data = PythonOperator(
@@ -169,15 +175,14 @@ with DAG(
         trigger_rule="none_failed"
     )
 
-    check_max_date = SnowflakeOperator(
+    check_max_date = MySqlOperator(
         task_id = 'Check-Max-Date',
         sql=sql_stmts.check_max_date,
         params = {
                 "table" : '{{table}}',
-                "database" : '{{database}}',
-                "schema" : '{{schema}}'
+                "database" : '{{database}}'
                         },
-        snowflake_conn_id = "snowflake_db"
+        mysql_conn_id = "snow_trend_db"
     )
 
 check_table_exists >> pull_xcoms >> branch_check
