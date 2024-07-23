@@ -3,6 +3,6 @@ This Project incorporates the key technologies (dbt for data transformation, Sno
 
 ### Make airflow_config.ini inside airflow directory
         [give name as you like]
-                account = <your_snowflake_account_name>        
+                host = <your_snowflake_account_name>        
                 password = <your_snowflake_password>
                 user = <your_snowflake_username>
