@@ -21,7 +21,8 @@ stock_PORTFOLIO_mov_query = """
         SUM(ACTUAL_LOT_PRICE) ACTUAL_PORTFOLIO, 
         SUM(LOT_START_PRICE) WEEK_START_PORTFOLIO,
         SUM(LOT_END_PRICE) WEEK_END_PORTFOLIO,
-        ROUND(((SUM(LOT_END_PRICE) - SUM(LOT_START_PRICE))/SUM(LOT_START_PRICE)) * 100,2) PER_CHANGE 
+        ROUND(((SUM(LOT_END_PRICE) - SUM(LOT_START_PRICE))/SUM(LOT_START_PRICE)) * 100,2) WEEK_PER_CHANGE,
+        ROUND(((SUM(LOT_END_PRICE) - SUM(ACTUAL_LOT_PRICE))/SUM(ACTUAL_LOT_PRICE)) * 100,2) ACTUAL_PER_CHANGE
         FROM (
         SELECT
         ACCOUNT_NUMBER,PAN_CARD,ISIN,COMPANY,`Security Id` as TICKER,
@@ -118,7 +119,8 @@ def create_message(**kwargs) :
         <th>ACTUAL_PORTFOLIO</th>
         <th>WEEK_START_PORTFOLIO</th>
         <th>WEEK_END_PORTFOLIO</th>
-        <th>PER_CHANGE</th>
+        <th>WEEK_PER_CHANGE</th>
+        <th>ACTUAL_PER_CHANGE</th>
         </tr>  
     """
     ti = kwargs['ti']
@@ -133,7 +135,8 @@ def create_message(**kwargs) :
                     <td>{actual_PORTFOLIO}</td>
                     <td>{weeK_start_PORTFOLIO}</td>
                     <td>{weeK_end_PORTFOLIO}</td>
-                    <td>{perchange}</td>
+                    <td>{week_perchange}</td>
+                    <td>{actual_perchange}</td>
                     </tr> 
                     """.format(date=data[0],
                                accoutno = data[1],
@@ -141,7 +144,8 @@ def create_message(**kwargs) :
                                actual_PORTFOLIO =data[3],
                                weeK_start_PORTFOLIO =data[4],
                                weeK_end_PORTFOLIO =data[5],
-                               perchange =data[6]
+                               week_perchange =data[6],
+                               actual_perchange =data[7]
                                )
     mail_body +=  "</table></body</html>"
     send_email = EmailOperator(
