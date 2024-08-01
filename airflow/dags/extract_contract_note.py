@@ -85,7 +85,7 @@ def extract_contract_note_from_mail(**kwargs):
           "/root/airflow/credentials.json", SCOPES
       )
       creds = flow.run_local_server(port=0)
-    with open("/root/airflow/credentials.json", "w") as token:
+    with open("/root/airflow/token.json", "w") as token:
       token.write(creds.to_json())
 
     service = build("gmail", "v1", credentials=creds)
