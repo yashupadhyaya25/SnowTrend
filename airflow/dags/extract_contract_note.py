@@ -106,7 +106,7 @@ def extract_contract_note_from_mail(**kwargs):
             file_date = file_date.group()
             parts = payload.get('parts')
             for part in parts :
-                if part['filename']:
+                if part['filename'] and 'CONTRACT' in part['filename'].upper():
                     attachment = service.users().messages().attachments().get(userId='me', messageId=message['id'],
                                                     id=part['body']['attachmentId']).execute()
                     file_data = base64.urlsafe_b64decode(attachment['data'].encode('UTF-8'))
